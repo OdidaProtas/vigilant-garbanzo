@@ -5,6 +5,8 @@
       "removeComments": true,
       "preserveConstEnums": true,
       "sourceMap": true,
-      "strict": true
+      "strict": true,
+      "target": "esnext",
+      "moduleResolution": "node"
     },
       }
