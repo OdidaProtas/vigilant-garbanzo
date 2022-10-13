@@ -1,6 +1,7 @@
-import { EventBridgeEvent, S3BatchResult } from "aws-lambda";
-import * as cheerio from "cheerio";
 import axios from "axios";
+import * as builder from "xmlbuilder";
+import { EventBridgeEvent } from "aws-lambda";
+
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 const BUCKET = "sitemap generator";
@@ -28,7 +29,7 @@ export interface Output {
 
 export const handler = async (
   event: Partial<EventBridgeEvent<any, any>>
-): Promise<S3BatchResult> => {
+): Promise<any> => {
   const output: Output = {
     title: "",
     s3_url: "",
@@ -36,10 +37,21 @@ export const handler = async (
   };
 
   try {
-    output.s3_url = await storage.storeXMLFile({...{}}, body.name);
-  } catch (err) {
+    // const products = axios.get()
+    // const categories = axios.get()
+    let xml = builder
+      .create("root")
+      .ele("xmlbuilder")
+      .ele(
+        "repo",
+        { type: "git" },
+        "git://github.com/oozcitak/xmlbuilder-js.git"
+      )
+      .end({ pretty: true });
+
+    output.s3_url = await storage.storeXMLFile(xml, "name");
+  } catch (err: any) {
     output.error = err.message;
     console.error(err);
   }
-
 };
