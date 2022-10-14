@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "deploy": "lambda-build upload sitemapGenerator generator -r ap-northeast-3",
+    "deploy": "lambda-build upload sitemapGenerator  -r ap-northeast-3",
     "test": "mocha --recursive 'test' --extension ts --require esbuild-register",
     "dev": "ts-node test_event.ts"
   },
