@@ -1,107 +1,49 @@
-import * as builder from "xmlbuilder2";
-import * as fs from "node:fs";
-import { EventBridgeEvent } from "aws-lambda";
+import axios from "axios";
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { handleException } from "./util/handleException";
-import { createCategoryUrl, createProductUrl } from "./util/urls";
 
-const axios = require("axios");
+import { storage, xml, urls } from "./util";
+import { constants } from "./constants";
 
-const BUCKET = "sitemapstoragebucket";
-const s3Client = new S3Client({ region: "ap-northeast-1" });
+import { TCategory, TOutput, TProduct } from "./types";
+import { CloudFormationCustomResourceEvent } from "aws-lambda";
 
-const productsUrl = "https://api.africasokoni.ke/api/v1/products";
-const categoriesUrl = "https://api.africasokoni.ke/api/v1/categories";
-
-export const storage = {
-  storeXMLFile: async (content: string, name: string): Promise<string> => {
-    const key = `${name}.xml`;
-    const command = new PutObjectCommand({
-      Bucket: BUCKET,
-      Key: key,
-      Body: Buffer.from(content),
-      ContentType: "text/xml",
-    });
-    await s3Client.send(command);
-    return `https://${BUCKET}.s3.amazonaws.com/${key}`;
-  },
-};
-
-export interface Output {
-  title: string;
-  s3_url: string;
-  error: string;
-}
-
-export const handler = async (event: any, context: any): Promise<any> => {
-  const output: Output = {
-    title: "",
-    s3_url: "",
-    error: "",
-  };
-
+export const handler = async (
+  event: CloudFormationCustomResourceEvent
+): Promise<TOutput | void> => {
   try {
-    const productsDataPromise = axios.get(productsUrl);
-    const categoriesDataPromise = axios.get(categoriesUrl);
+    const productsRequest = axios.get(constants.PRODUCTS_URL);
+    const categoriesRequest = axios.get(constants.CATEGORIES_URL);
 
-    const [
-      {
-        data: { results: productsData },
-      },
-      ,
-    ] = await handleException(productsDataPromise);
+    const [productsRes] = await handleException(productsRequest);
+    const [categoriesData] = await handleException(categoriesRequest);
 
-    const [
-      {
-        data: { results: categoriesData },
-      },
-      ,
-    ] = await handleException(categoriesDataPromise);
+    const products: TProduct[] = productsRes?.data?.results ?? [];
+    const categories: TCategory[] = categoriesData?.data?.results ?? [];
 
-    const products = productsData ?? [];
-    const categories = categoriesData ?? [];
+    const productsXML = xml.create(products, urls.product);
+    const categoriesXml = xml.create(categories, urls.category);
 
-    let doc = builder
-      .create({ version: "1.0", encoding: "UTF-8" })
-      .ele("urlset", { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" });
+    const saveProductsDoc = storage.bin.storeXMLFile(
+      productsXML,
+      constants.PRODUCTS_FILENAME
+    );
 
-    for (let product of products) {
-      doc
-        .ele("url")
-        .ele("loc")
-        .txt(createProductUrl(product))
-        .up()
-        .ele("lastmod")
-        .txt(new Date().toDateString())
-        .up()
-        .ele("priority")
-        .txt("0.8")
-        .up()
-        .up();
-    }
+    const saveCategoriesDoc = storage.bin.storeXMLFile(
+      categoriesXml,
+      constants.CATEGORIES_FILENAME
+    );
 
-    for (let category of categories) {
-      doc
-        .ele("url")
-        .ele("loc")
-        .txt(createCategoryUrl(category))
-        .up()
-        .ele("lastmod")
-        .txt(new Date().toDateString())
-        .up()
-        .ele("priority")
-        .txt("0.8")
-        .up()
-        .up();
-    }
+    const [productsUrl] = await handleException(saveProductsDoc);
+    const [categoriesUrl] = await handleException(saveCategoriesDoc);
 
-    const xml = doc.doc().end({ prettyPrint: true });
-    output.s3_url = await storage.storeXMLFile(xml, "sokoni-web-sitemap");
-    context.succeed("done");
+    let output: TOutput = {
+      productsUrl,
+      categoriesUrl,
+    };
+    return output;
   } catch (err: any) {
-    output.error = err.message;
-    console.error(err);
-    context.succeed("done");
+    const error = err.message;
+    console.error(error);
   }
 };

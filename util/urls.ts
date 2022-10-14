@@ -1,7 +1,14 @@
-export function createCategoryUrl(category: any): string {
-  return `https://africasokoni.co.ke/m/${category.slug}`;
+import { TCategory, TProduct } from "../types";
+
+export function category(c: TCategory): string {
+  return `https://africasokoni.co.ke/m/${c.slug}`;
 }
 
-export function createProductUrl(product: any): string {
-  return `https://africasokoni.co.ke/${product.slug}`;
+export function product(p: TProduct): string {
+  return `https://africasokoni.co.ke/${p.slug}`;
 }
+
+export const urls = {
+  product,
+  category,
+};
