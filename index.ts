@@ -8,8 +8,8 @@ import { createCategoryUrl, createProductUrl } from "./util/urls";
 
 const axios = require("axios");
 
-const BUCKET = "sitemapgenerator";
-const s3Client = new S3Client({ region: "us-east-2" });
+const BUCKET = "sitemapstoragebucket";
+const s3Client = new S3Client({ region: "ap-northeast-3" });
 
 const productsUrl = "https://api.africasokoni.ke/api/v1/products";
 const categoriesUrl = "https://api.africasokoni.ke/api/v1/categories";
@@ -99,12 +99,8 @@ export const handler = async (
     }
 
     const xml = doc.doc().end({ prettyPrint: true });
-
-    fs.writeFileSync("test.xml", xml);
-
-    return "Invoke success";
-
-    // output.s3_url = await storage.storeXMLFile(xml, "name");
+    output.s3_url = await storage.storeXMLFile(xml, "sokoni-web-sitemap");
+    return output;
   } catch (err: any) {
     output.error = err.message;
     console.error(err);
