@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "deploy": "lambda-build upload sitemapGenerator  -r ap-northeast-3",
+    "deploy": "lambda-build upload sitemapGenerator  -r ap-northeast-1",
     "test": "mocha --recursive 'test' --extension ts --require esbuild-register",
-    "dev": "ts-node test_event.ts"
+    "dev": "lambda-build build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.107.0",

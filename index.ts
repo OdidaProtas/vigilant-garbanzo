@@ -9,7 +9,7 @@ import { createCategoryUrl, createProductUrl } from "./util/urls";
 const axios = require("axios");
 
 const BUCKET = "sitemapstoragebucket";
-const s3Client = new S3Client({ region: "ap-northeast-3" });
+const s3Client = new S3Client({ region: "ap-northeast-1" });
 
 const productsUrl = "https://api.africasokoni.ke/api/v1/products";
 const categoriesUrl = "https://api.africasokoni.ke/api/v1/categories";
@@ -34,9 +34,7 @@ export interface Output {
   error: string;
 }
 
-export const handler = async (
-  event: Partial<EventBridgeEvent<any, any>>
-): Promise<any> => {
+export const handler = async (event: any, context: any): Promise<any> => {
   const output: Output = {
     title: "",
     s3_url: "",
@@ -100,9 +98,10 @@ export const handler = async (
 
     const xml = doc.doc().end({ prettyPrint: true });
     output.s3_url = await storage.storeXMLFile(xml, "sokoni-web-sitemap");
-    return output;
+    context.succeed("done");
   } catch (err: any) {
     output.error = err.message;
     console.error(err);
+    context.succeed("done");
   }
 };
