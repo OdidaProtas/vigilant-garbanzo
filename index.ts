@@ -1,11 +1,18 @@
-import axios from "axios";
-import * as builder from "xmlbuilder";
+import * as builder from "xmlbuilder2";
+import * as fs from "node:fs";
 import { EventBridgeEvent } from "aws-lambda";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { handleException } from "./util/handleException";
+import { createCategoryUrl, createProductUrl } from "./util/urls";
 
-const BUCKET = "sitemap generator";
+const axios = require("axios");
+
+const BUCKET = "sitemapgenerator";
 const s3Client = new S3Client({ region: "us-east-2" });
+
+const productsUrl = "https://api.africasokoni.ke/api/v1/products";
+const categoriesUrl = "https://api.africasokoni.ke/api/v1/categories";
 
 export const storage = {
   storeXMLFile: async (content: string, name: string): Promise<string> => {
@@ -37,19 +44,67 @@ export const handler = async (
   };
 
   try {
-    // const products = axios.get()
-    // const categories = axios.get()
-    let xml = builder
-      .create("root")
-      .ele("xmlbuilder")
-      .ele(
-        "repo",
-        { type: "git" },
-        "git://github.com/oozcitak/xmlbuilder-js.git"
-      )
-      .end({ pretty: true });
+    const productsDataPromise = axios.get(productsUrl);
+    const categoriesDataPromise = axios.get(categoriesUrl);
 
-    output.s3_url = await storage.storeXMLFile(xml, "name");
+    const [
+      {
+        data: { results: productsData },
+      },
+      ,
+    ] = await handleException(productsDataPromise);
+
+    const [
+      {
+        data: { results: categoriesData },
+      },
+      ,
+    ] = await handleException(categoriesDataPromise);
+
+    const products = productsData ?? [];
+    const categories = categoriesData ?? [];
+
+    let doc = builder
+      .create({ version: "1.0", encoding: "UTF-8" })
+      .ele("urlset", { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" });
+
+    for (let product of products) {
+      doc
+        .ele("url")
+        .ele("loc")
+        .txt(createProductUrl(product))
+        .up()
+        .ele("lastmod")
+        .txt(new Date().toDateString())
+        .up()
+        .ele("priority")
+        .txt("0.8")
+        .up()
+        .up();
+    }
+
+    for (let category of categories) {
+      doc
+        .ele("url")
+        .ele("loc")
+        .txt(createCategoryUrl(category))
+        .up()
+        .ele("lastmod")
+        .txt(new Date().toDateString())
+        .up()
+        .ele("priority")
+        .txt("0.8")
+        .up()
+        .up();
+    }
+
+    const xml = doc.doc().end({ prettyPrint: true });
+
+    fs.writeFileSync("test.xml", xml);
+
+    return "Invoke success";
+
+    // output.s3_url = await storage.storeXMLFile(xml, "name");
   } catch (err: any) {
     output.error = err.message;
     console.error(err);

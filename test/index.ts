@@ -4,7 +4,7 @@ import { stub, restore } from "sinon";
 import { strictEqual } from "assert";
 import axios from "axios";
 
-const executeLambda = async (url: string, name: string): Promise<any> => {
+const executeLambda = async (): Promise<any> => {
   const output = await handler({});
   let outputBody = null;
   if (output) {
@@ -19,14 +19,10 @@ const name = "__file_name__";
 afterEach(restore);
 
 describe("handler", () => {
-  it("...products", async () => {
-    stub(axios, "get").resolves({ data: `` });
+  it("Function loads", async () => {
+    const output = executeLambda()
   });
 
-  it("...categories", async () => {
-    stub(axios, "get").resolves({ data: `` });
-  });
-
-  it("file url", async () => {
+  it("Saves xml sitemap to s3", async () => {
   });
 });
