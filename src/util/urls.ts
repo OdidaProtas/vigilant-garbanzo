@@ -1,4 +1,4 @@
-import { TCategory, TProduct } from "../types";
+import { TCategory, TProduct } from "../../types";
 
 export function category(c: TCategory): string {
   return `https://africasokoni.co.ke/m/${c.slug}`;

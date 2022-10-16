@@ -4,7 +4,7 @@ import axios from "axios";
 import { constants } from "./constants";
 import { storage, xml, urls } from "./util";
 
-import { TCategory, TOutput, TProduct } from "./types";
+import { TCategory, TOutput, TProduct } from "../types";
 import { handleException } from "./util/handleException";
 
 import { CloudFormationCustomResourceEvent } from "aws-lambda";
@@ -13,7 +13,7 @@ export const handler = async (
   event: CloudFormationCustomResourceEvent 
 ): Promise<TOutput | void> => {
   const productsRequest = axios.get(constants.PRODUCTS_URL);
-  const mainCategoriesUrl = axios.get(constants.CATEGORIES_URL);
+  const mainCategoriesUrl = axios.get(constants.MAIN_CATEGORIES_URL);
 
   const [productsRes] = await handleException(productsRequest);
   const [categoriesData] = await handleException(mainCategoriesUrl);
