@@ -11,17 +11,39 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-3
+          aws-region: ${{ secrets.AWS_REGION }}
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
+      - name: Create and populate production .env file
+        if: github.ref == 'refs/heads/master'
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET: ${{ secrets.SITEMAP_GEN_PROD}}
+        run: |
+          touch .env
+          echo AWS_REGION="$AWS_REGION" >> .env
+          echo S3_BUCKET="$S3_BUCKET" >> .env
+      - name: Configure staging environment
+        if: github.ref == 'refs/heads/develop'
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET: ${{ secrets.SITEMAP_GEN_STAGE }}
+        run: |
+          touch .env
+          echo AWS_REGION="$AWS_REGION" >> .env
+          echo S3_BUCKET="$S3_BUCKET" >> .env
       - name: npm ci
         env:
           CI: true
         run: |
           npm ci
-      
-      - name: deploy
+      - name: deploy production
+        if: github.ref == 'refs/heads/master'
         run: |
           # npm run deploy
+      - name: deploy staging
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          # npm run deploy-stage

@@ -4,15 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "deploy": "lambda-build upload sitemapGenerator  -r ap-northeast-1",
-    "test": "mocha --recursive 'test' --extension ts --require esbuild-register",
-    "dev": "lambda-build build"
+    "deploy": "lambda-build upload sitemap-gen-prod  -r eu-central-1 -e src/index.ts",
+    "stage": "lambda-build upload sitemap-gen-stage  -r eu-central-1 -e src/index.ts",
+    "test": "mocha --recursive 'test' --extension ts --require esbuild-register"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.107.0",
     "aws-lambda": "^1.0.7",
     "axios": "^1.1.2",
     "cheerio": "^1.0.0-rc.11",
+    "dotenv": "^16.0.3",
     "install": "^0.13.0",
     "xmlbuilder2": "^3.0.2"
   },

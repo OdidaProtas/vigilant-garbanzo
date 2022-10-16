@@ -1,49 +1,32 @@
+import "dotenv/config";
 import axios from "axios";
 
-import { handleException } from "./util/handleException";
-
-import { storage, xml, urls } from "./util";
 import { constants } from "./constants";
+import { storage, xml, urls } from "./util";
 
 import { TCategory, TOutput, TProduct } from "./types";
-import { CloudFormationCustomResourceEvent } from "aws-lambda";
+import { handleException } from "./util/handleException";
+
+import { APIGatewayEvent, CloudFormationCustomResourceEvent } from "aws-lambda";
 
 export const handler = async (
-  event: CloudFormationCustomResourceEvent
+  event: CloudFormationCustomResourceEvent | APIGatewayEvent
 ): Promise<TOutput | void> => {
-  try {
-    const productsRequest = axios.get(constants.PRODUCTS_URL);
-    const categoriesRequest = axios.get(constants.CATEGORIES_URL);
+  const productsRequest = axios.get(constants.PRODUCTS_URL);
+  const mainCategoriesUrl = axios.get(constants.CATEGORIES_URL);
 
-    const [productsRes] = await handleException(productsRequest);
-    const [categoriesData] = await handleException(categoriesRequest);
+  const [productsRes] = await handleException(productsRequest);
+  const [categoriesData] = await handleException(mainCategoriesUrl);
 
-    const products: TProduct[] = productsRes?.data?.results ?? [];
-    const categories: TCategory[] = categoriesData?.data?.results ?? [];
+  const products: TProduct[] = productsRes?.data?.results ?? [];
+  const mainCategories: TCategory[] = categoriesData?.data?.results ?? [];
 
-    const productsXML = xml.create(products, urls.product);
-    const categoriesXml = xml.create(categories, urls.category);
+  const productsXML = xml.create(products, urls.product);
+  const mainCategoriesXml = xml.create(mainCategories, urls.category);
 
-    const saveProductsDoc = storage.bin.storeXMLFile(
-      productsXML,
-      constants.PRODUCTS_FILENAME
-    );
+  const saveProductsDoc = storage.products(productsXML);
+  const saveMainCategoriesDoc = storage.mainCategories(mainCategoriesXml);
 
-    const saveCategoriesDoc = storage.bin.storeXMLFile(
-      categoriesXml,
-      constants.CATEGORIES_FILENAME
-    );
-
-    const [productsUrl] = await handleException(saveProductsDoc);
-    const [categoriesUrl] = await handleException(saveCategoriesDoc);
-
-    let output: TOutput = {
-      productsUrl,
-      categoriesUrl,
-    };
-    return output;
-  } catch (err: any) {
-    const error = err.message;
-    console.error(error);
-  }
+  await handleException(saveProductsDoc);
+  await handleException(saveMainCategoriesDoc);
 };
