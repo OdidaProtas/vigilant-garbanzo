@@ -1,7 +1,13 @@
 const handleException = async (promise: Promise<any>) => {
   try {
-    return [await promise, null];
+    const res = await promise;
+    const results = res?.data?.results;
+    if (results) {
+      return [results, null];
+    }
+    return [res, null];
   } catch (error) {
+    console.error(error);
     return [null, error];
   }
 };

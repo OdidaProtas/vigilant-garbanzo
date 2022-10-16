@@ -1,41 +1,55 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { constants } from "../constants";
+import { handleException } from "./handleException";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-const s3Client = new S3Client({ region: constants.AWS_REGION });
-const BUCKET = constants.S3_BUCKET;
-const fileName = constants.FILENAME;
+const {
+  PRODUCTS_DIR,
+  MAIN_CATEGORIES_DIR,
+  SUB_CATEGORIES_DIR,
+  COLLECTIONS_DIR,
+  BRANDS_DIR,
+  AWS_REGION,
+  S3_BUCKET,
+  FILENAME,
+  CHILD_CATEGORIES_DIR
+} = constants;
+
+const s3Client = new S3Client({ region: AWS_REGION });
 
 export const storage = {
   products: (content: string) => {
-    const filePath = `products/${fileName}`;
+    const filePath = `${PRODUCTS_DIR}${FILENAME}`;
     return storeXMLFile(content, filePath);
   },
   mainCategories: (content: string) => {
-    const filePath = `main-categories/${fileName}`;
+    const filePath = `${MAIN_CATEGORIES_DIR}${FILENAME}`;
     return storeXMLFile(content, filePath);
   },
   subCategories: (content: string) => {
-    const filePath = `sub-categories/${fileName}`;
+    const filePath = `${SUB_CATEGORIES_DIR}${FILENAME}`;
     return storeXMLFile(content, filePath);
   },
   collections: (content: string) => {
-    const filePath = `collections/${fileName}`;
+    const filePath = `${COLLECTIONS_DIR}${FILENAME}`;
     return storeXMLFile(content, filePath);
   },
   brands: (content: string) => {
-    const filePath = `brands/${fileName}`;
+    const filePath = `${BRANDS_DIR}${FILENAME}`;
+    return storeXMLFile(content, filePath);
+  },
+  childCategories: (content: string) => {
+    const filePath = `${CHILD_CATEGORIES_DIR}${FILENAME}`;
     return storeXMLFile(content, filePath);
   },
 };
 
-var storeXMLFile = async (content: string, name: string): Promise<string> => {
-  const key = `${name}.xml`;
+async function storeXMLFile (content: string, file: string){
+  const key = `${file}.xml`;
   const command = new PutObjectCommand({
-    Bucket: BUCKET,
+    Bucket: S3_BUCKET,
     Key: key,
     Body: Buffer.from(content),
     ContentType: "text/xml",
   });
-  await s3Client.send(command);
-  return `https://${BUCKET}.s3.amazonaws.com/${key}`;
+  await handleException(s3Client.send(command));
 };
