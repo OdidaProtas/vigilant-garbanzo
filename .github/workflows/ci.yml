@@ -20,27 +20,33 @@ jobs:
         if: github.ref == 'refs/heads/main'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          # Prod environment s3 bucket name ie. sitemap-gen-prod-env
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_PROD}}
-          BASE_DOC_URL: ${{secrets.PROD_URL}}
+          # Prod storefront base URL ie. https://africasokoni.ke/
+          BASE_SITEMAP_URL: ${{secrets.AFRICASOKONI_PROD_STORE_URL}} 
+          # Prod base api url ie. https://api.africasokoni.ke/api/v1/
           BASE_API_URL: ${{ secrets.PROD_API}}
         run: |
           touch .env
           echo AWS_REGION="$AWS_REGION" >> .env
           echo S3_BUCKET="$S3_BUCKET" >> .env
-          echo BASE_DOC_URL="$BASE_DOC_URL" >> .env
+          echo BASE_SITEMAP_URL="$BASE_SITEMAP_URL" >> .env
           echo BASE_API_URL="$BASE_API_URL" >> .env
       - name: Else  if on develop create and populate .env
         if: github.ref == 'refs/heads/develop'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          # Stage environment s3 bucket name ie. sitemap-gen-stage-env
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_STAGE }}
-          BASE_DOC_URL: ${{secrets.STAGE_URL}}
+          # Stage storefront base URL ie. https://africasokoni.ke/
+          BASE_SITEMAP_URL: ${{secrets.STAGE_URL}}
+          # Stage base api url ie. https://api.africasokoni.ke/api/v1/
           BASE_API_URL: ${{ secrets.STAGE_API}}
         run: |
           touch .env
           echo AWS_REGION="$AWS_REGION" >> .env
           echo S3_BUCKET="$S3_BUCKET" >> .env
-          echo BASE_DOC_URL="$BASE_DOC_URL" >> .env
+          echo BASE_SITEMAP_URL="$BASE_SITEMAP_URL" >> .env
           echo BASE_API_URL="$BASE_API_URL" >> .env
       - name: npm ci
         env:

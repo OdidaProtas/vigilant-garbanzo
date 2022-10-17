@@ -1,10 +1,15 @@
 export type TOutput = {
-  productsSitemap: string;
-  mainCategoriesSitemap: string;
-  subCategoriesSitemap: string;
-  collectionsSitemap: string;
-  brandsSitemap: string;
-  childCategoriesSitemap: string;
+  products: TOutputItem;
+  mainCategories: TOutputItem;
+  subCategories: TOutputItem;
+  collections: TOutputItem;
+  brands: TOutputItem;
+  childCategories: TOutputItem;
+};
+
+type TOutputItem = {
+  url: string;
+  doc: string;
 };
 
 export type TProduct = {

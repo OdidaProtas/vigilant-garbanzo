@@ -24,6 +24,7 @@
     "@types/sinon": "^10.0.11",
     "@types/xmlbuilder": "^11.0.1",
     "esbuild-register": "^3.3.3",
+    "fast-xml-parser": "^4.0.11",
     "lambda-build": "^1.0.6",
     "mocha": "^10.0.0",
     "sinon": "^14.0.0",

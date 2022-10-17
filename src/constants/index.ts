@@ -1,7 +1,9 @@
+import "dotenv/config";
+
 const AWS_REGION = process.env.AWS_REGION;
 const S3_BUCKET = process.env.S3_BUCKET;
 
-const BASE_DOC_URL = process.env.BASE_DOC_URL;
+const BASE_DOC_URL = process.env.BASE_SITEMAP_URL;
 const BASE_API_URL = process.env.BASE_API_URL;
 
 const PRODUCTS_URL = `${BASE_API_URL}/products?is_approved=true`;

@@ -56,12 +56,32 @@ export const handler = async (
   const [collectionsSitemap] = await handleException(saveCollectionsDoc);
   const [childCategoriesSitemap] = await handleException(saveChildategoriesDoc);
 
-  return {
-    productsSitemap,
-    mainCategoriesSitemap,
-    subCategoriesSitemap,
-    collectionsSitemap,
-    brandsSitemap,
-    childCategoriesSitemap,
+  const output = {
+    products: {
+      url: productsSitemap,
+      doc: productsXML,
+    },
+    mainCategories: {
+      url: mainCategoriesSitemap,
+      doc: mainCategoriesXml,
+    },
+    subCategories: {
+      url: subCategoriesSitemap,
+      doc: subCategoriesXml,
+    },
+    brands: {
+      url: brandsSitemap,
+      doc: brandsXml,
+    },
+    collections: {
+      url: collectionsSitemap,
+      doc: collectionsXml,
+    },
+    childCategories: {
+      url: childCategoriesSitemap,
+      doc: childCategoriesXml,
+    },
   };
+
+  return output;
 };
