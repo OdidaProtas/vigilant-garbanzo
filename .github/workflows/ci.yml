@@ -21,8 +21,8 @@ jobs:
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_PROD}}
-          BASE_DOC_URL: ${{}}
-          BASE_API_URL: ${{}}
+          BASE_DOC_URL: ${{secrets.PROD_URL}}
+          BASE_API_URL: ${{ secrets.PROD_API}}
         run: |
           touch .env
           echo AWS_REGION="$AWS_REGION" >> .env
@@ -34,6 +34,8 @@ jobs:
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_STAGE }}
+          BASE_DOC_URL: ${{secrets.STAGE_URL}}
+          BASE_API_URL: ${{ secrets.STAGE_API}}
         run: |
           touch .env
           echo AWS_REGION="$AWS_REGION" >> .env
