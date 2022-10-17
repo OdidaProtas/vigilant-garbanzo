@@ -1,6 +1,10 @@
 export type TOutput = {
-  productsUrl: string;
-  categoriesUrl: string;
+  productsSitemap: string;
+  mainCategoriesSitemap: string;
+  subCategoriesSitemap: string;
+  collectionsSitemap: string;
+  brandsSitemap: string;
+  childCategoriesSitemap: string;
 };
 
 export type TProduct = {

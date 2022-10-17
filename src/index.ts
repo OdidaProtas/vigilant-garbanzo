@@ -4,10 +4,10 @@ import axios from "axios";
 import { constants } from "./constants";
 import { storage, xml, urls } from "./util";
 
-import { TOutput } from "../types";
 import { handleException } from "./util/handleException";
 
 import { CloudFormationCustomResourceEvent } from "aws-lambda";
+import { TOutput } from "../types";
 
 const {
   PRODUCTS_URL,
@@ -20,9 +20,7 @@ const {
 
 export const handler = async (
   event: CloudFormationCustomResourceEvent
-): Promise<TOutput | void> => {
-
-  // 
+): Promise<TOutput> => {
   const productsRequest = axios.get(PRODUCTS_URL);
   const mainCategoriesRequest = axios.get(MAIN_CATEGORIES_URL);
   const subCategoriesRequest = axios.get(SUB_CATEGORIES_URL);
@@ -51,10 +49,19 @@ export const handler = async (
   const saveSubCategoriesDoc = storage.subCategories(subCategoriesXml);
   const saveChildategoriesDoc = storage.childCategories(childCategoriesXml);
 
-  await handleException(saveProductsDoc);
-  await handleException(saveMainCategoriesDoc);
-  await handleException(saveSubCategoriesDoc);
-  await handleException(saveBrandsDoc);
-  await handleException(saveCollectionsDoc);
-  await handleException(saveChildategoriesDoc);
+  const [productsSitemap] = await handleException(saveProductsDoc);
+  const [mainCategoriesSitemap] = await handleException(saveMainCategoriesDoc);
+  const [subCategoriesSitemap] = await handleException(saveSubCategoriesDoc);
+  const [brandsSitemap] = await handleException(saveBrandsDoc);
+  const [collectionsSitemap] = await handleException(saveCollectionsDoc);
+  const [childCategoriesSitemap] = await handleException(saveChildategoriesDoc);
+
+  return {
+    productsSitemap,
+    mainCategoriesSitemap,
+    subCategoriesSitemap,
+    collectionsSitemap,
+    brandsSitemap,
+    childCategoriesSitemap,
+  };
 };

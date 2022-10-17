@@ -16,16 +16,20 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
-      - name: Create and populate production .env file
-        if: github.ref == 'refs/heads/master'
+      - name: If on main branch create and populate production .env file
+        if: github.ref == 'refs/heads/main'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_PROD}}
+          BASE_DOC_URL: ${{}}
+          BASE_API_URL: ${{}}
         run: |
           touch .env
           echo AWS_REGION="$AWS_REGION" >> .env
           echo S3_BUCKET="$S3_BUCKET" >> .env
-      - name: Configure staging environment
+          echo BASE_DOC_URL="$BASE_DOC_URL" >> .env
+          echo BASE_API_URL="$BASE_API_URL" >> .env
+      - name: Else  if on develop create and populate .env
         if: github.ref == 'refs/heads/develop'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -34,16 +38,18 @@ jobs:
           touch .env
           echo AWS_REGION="$AWS_REGION" >> .env
           echo S3_BUCKET="$S3_BUCKET" >> .env
+          echo BASE_DOC_URL="$BASE_DOC_URL" >> .env
+          echo BASE_API_URL="$BASE_API_URL" >> .env
       - name: npm ci
         env:
           CI: true
         run: |
           npm ci
-      - name: deploy production
-        if: github.ref == 'refs/heads/master'
+      - name: If on main branch deploy to production
+        if: github.ref == 'refs/heads/main'
         run: |
           # npm run deploy
-      - name: deploy staging
+      - name: Else if on develop branch deploy staging
         if: github.ref == 'refs/heads/develop'
         run: |
           # npm run deploy-stage
