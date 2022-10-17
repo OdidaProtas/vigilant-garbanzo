@@ -1,6 +1,6 @@
 import * as builder from "xmlbuilder2";
 
-export function create(items: any, createUrl: any) {
+export function create(items = [], createUrl: Function): string {
   let newDoc = builder
     .create({ version: "1.0", encoding: "UTF-8" })
     .ele("urlset", { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" });

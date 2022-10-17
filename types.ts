@@ -1,6 +1,15 @@
 export type TOutput = {
-  productsUrl: string;
-  categoriesUrl: string;
+  products: TOutputItem;
+  mainCategories: TOutputItem;
+  subCategories: TOutputItem;
+  collections: TOutputItem;
+  brands: TOutputItem;
+  childCategories: TOutputItem;
+};
+
+type TOutputItem = {
+  url: string;
+  doc: string;
 };
 
 export type TProduct = {

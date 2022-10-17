@@ -11,7 +11,7 @@ const {
   AWS_REGION,
   S3_BUCKET,
   FILENAME,
-  CHILD_CATEGORIES_DIR
+  CHILD_CATEGORIES_DIR,
 } = constants;
 
 const s3Client = new S3Client({ region: AWS_REGION });
@@ -19,31 +19,31 @@ const s3Client = new S3Client({ region: AWS_REGION });
 export const storage = {
   products: (content: string) => {
     const filePath = `${PRODUCTS_DIR}${FILENAME}`;
-    return storeXMLFile(content, filePath);
+    return bin.storeXMLFile(content, filePath);
   },
   mainCategories: (content: string) => {
     const filePath = `${MAIN_CATEGORIES_DIR}${FILENAME}`;
-    return storeXMLFile(content, filePath);
+    return bin.storeXMLFile(content, filePath);
   },
   subCategories: (content: string) => {
     const filePath = `${SUB_CATEGORIES_DIR}${FILENAME}`;
-    return storeXMLFile(content, filePath);
+    return bin.storeXMLFile(content, filePath);
   },
   collections: (content: string) => {
     const filePath = `${COLLECTIONS_DIR}${FILENAME}`;
-    return storeXMLFile(content, filePath);
+    return bin.storeXMLFile(content, filePath);
   },
   brands: (content: string) => {
     const filePath = `${BRANDS_DIR}${FILENAME}`;
-    return storeXMLFile(content, filePath);
+    return bin.storeXMLFile(content, filePath);
   },
   childCategories: (content: string) => {
     const filePath = `${CHILD_CATEGORIES_DIR}${FILENAME}`;
-    return storeXMLFile(content, filePath);
+    return bin.storeXMLFile(content, filePath);
   },
 };
 
-async function storeXMLFile (content: string, file: string){
+export async function storeXMLFile(content: string, file: string) {
   const key = `${file}.xml`;
   const command = new PutObjectCommand({
     Bucket: S3_BUCKET,
@@ -52,4 +52,7 @@ async function storeXMLFile (content: string, file: string){
     ContentType: "text/xml",
   });
   await handleException(s3Client.send(command));
-};
+  return `https://${S3_BUCKET}.s3.amazonaws.com/${key}`;
+}
+
+export var bin = { storeXMLFile };
