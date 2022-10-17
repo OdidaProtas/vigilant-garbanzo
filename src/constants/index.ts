@@ -23,8 +23,8 @@ const CHILD_CATEGORIES_DIR = "child-categories/";
 const URL_PATHS = {
   mainCategory: "m",
   subCategory: "s",
-  collections: "c",
-  brands: "b",
+  collections: "cls",
+  brands: "brands",
   childCategories: "c",
 };
 

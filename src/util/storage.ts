@@ -11,7 +11,7 @@ const {
   AWS_REGION,
   S3_BUCKET,
   FILENAME,
-  CHILD_CATEGORIES_DIR
+  CHILD_CATEGORIES_DIR,
 } = constants;
 
 const s3Client = new S3Client({ region: AWS_REGION });
@@ -43,7 +43,7 @@ export const storage = {
   },
 };
 
-async function storeXMLFile (content: string, file: string){
+async function storeXMLFile(content: string, file: string) {
   const key = `${file}.xml`;
   const command = new PutObjectCommand({
     Bucket: S3_BUCKET,
@@ -52,4 +52,5 @@ async function storeXMLFile (content: string, file: string){
     ContentType: "text/xml",
   });
   await handleException(s3Client.send(command));
-};
+  return `https://${S3_BUCKET}.s3.amazonaws.com/${key}`;
+}

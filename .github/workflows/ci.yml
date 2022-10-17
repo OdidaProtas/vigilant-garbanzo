@@ -51,7 +51,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           # npm run test
-      -name: run tests on develop if on develop
+      - name: run tests on develop if on develop
         if: github.ref == 'refs/heads/develop'
         run: |
           # npm run test
