@@ -47,10 +47,11 @@ jobs:
           CI: true
         run: |
           npm ci
-      - name: Run tests if on main or develop
+      - name: Run tests if on main if on main
         if: github.ref == 'refs/heads/main'
         run: |
           # npm run test
+      -name: run tests on develop if on develop
         if: github.ref == 'refs/heads/develop'
         run: |
           # npm run test
