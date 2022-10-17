@@ -47,6 +47,13 @@ jobs:
           CI: true
         run: |
           npm ci
+      - name: Run tests if on main or develop
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # npm run test
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          # npm run test
       - name: If on main branch deploy to production
         if: github.ref == 'refs/heads/main'
         run: |
