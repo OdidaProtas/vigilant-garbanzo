@@ -2,8 +2,6 @@ import { handleException } from "./handleException";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { constants } from "../constants";
 
-console.log(constants)
-
 const {
   PRODUCTS_DIR,
   MAIN_CATEGORIES_DIR,
