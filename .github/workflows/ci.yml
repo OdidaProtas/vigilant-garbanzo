@@ -20,11 +20,8 @@ jobs:
         if: github.ref == 'refs/heads/main'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          # Prod environment s3 bucket name ie. sitemap-gen-prod-env
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_PROD}}
-          # Prod storefront base URL ie. https://africasokoni.ke/
-          BASE_SITEMAP_URL: ${{secrets.AFRICASOKONI_PROD_STORE_URL}} 
-          # Prod base api url ie. https://api.africasokoni.ke/api/v1/
+          BASE_SITEMAP_URL: ${{secrets.PROD_URL}} 
           BASE_API_URL: ${{ secrets.PROD_API}}
         run: |
           touch .env
@@ -36,11 +33,8 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          # Stage environment s3 bucket name ie. sitemap-gen-stage-env
           S3_BUCKET: ${{ secrets.SITEMAP_GEN_STAGE }}
-          # Stage storefront base URL ie. https://africasokoni.ke/
           BASE_SITEMAP_URL: ${{secrets.STAGE_URL}}
-          # Stage base api url ie. https://api.africasokoni.ke/api/v1/
           BASE_API_URL: ${{ secrets.STAGE_API}}
         run: |
           touch .env
