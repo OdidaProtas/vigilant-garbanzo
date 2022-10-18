@@ -34,7 +34,7 @@ describe("Config variables", function () {
     else done("S3_BUCKET is not defined in .env");
   });
   it("Checks if BASE_SITEMAP_URL is defined", function (done) {
-    const data = process.env.BASE_DOC_URL;
+    const data = process.env.BASE_SITEMAP_URL;
     if (data) done();
     else done("BASE_SITEMAP_URL is not defined in .env");
   });
@@ -52,19 +52,15 @@ const mockApiResponse = {
 };
 
 describe("Handler", function () {
-  it("Stores XML files", async function (done) {
+  it("Stores XML files", function () {
     stub(axios, "get").resolves({ data: mockApiResponse });
     stub(bin, "storeXMLFile").resolves(productsUrl);
-    const output = await executeLambda();
-    const parser = new XMLParser();
-    let parsedXML = parser.parse(output?.products?.doc ?? "");
-    const loc = parsedXML?.urlset?.url[0].loc;
-    strictEqual(output?.products.url, productsUrl);
-    strictEqual(loc, expectedUrl);
-    if (/undefined/.test(loc)) {
-      done("Invalid sitemap loc url");
-    } else {
-      done();
-    }
+    executeLambda().then((output) => {
+      const parser = new XMLParser();
+      let parsedXML = parser.parse(output?.products?.doc ?? "");
+      const loc = parsedXML?.urlset?.url[0].loc;
+      strictEqual(output?.products.url, productsUrl);
+      strictEqual(loc, expectedUrl);
+    });
   });
 });
