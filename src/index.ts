@@ -56,6 +56,8 @@ export const handler = async (
   const [collectionsSitemap] = await handleException(saveCollectionsDoc);
   const [childCategoriesSitemap] = await handleException(saveChildategoriesDoc);
 
+  console.log(childCategoriesXml)
+
   const output = {
     products: {
       url: productsSitemap,

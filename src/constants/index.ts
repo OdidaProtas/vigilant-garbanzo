@@ -6,12 +6,12 @@ const S3_BUCKET = process.env.S3_BUCKET;
 const BASE_DOC_URL = process.env.BASE_SITEMAP_URL;
 const BASE_API_URL = process.env.BASE_API_URL;
 
-const PRODUCTS_URL = `${BASE_API_URL}/products?is_approved=true`;
-const MAIN_CATEGORIES_URL = `${BASE_API_URL}/categories`;
-const SUB_CATEGORIES_URL = `${BASE_API_URL}/sub-categories`;
-const COLLECTIONS_URL = `${BASE_API_URL}/collections`;
-const BRANDS_URL = `${BASE_API_URL}/brands`;
-const CHILD_CATEGORIES_URL = `${BASE_API_URL}/child-categories`;
+const PRODUCTS_URL = `${BASE_API_URL}products?is_approved=true`;
+const MAIN_CATEGORIES_URL = `${BASE_API_URL}categories`;
+const SUB_CATEGORIES_URL = `${BASE_API_URL}sub-categories`;
+const COLLECTIONS_URL = `${BASE_API_URL}collections`;
+const BRANDS_URL = `${BASE_API_URL}brands`;
+const CHILD_CATEGORIES_URL = `${BASE_API_URL}child-categories`;
 
 const FILENAME = "sitemap";
 
