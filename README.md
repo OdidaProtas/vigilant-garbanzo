@@ -17,8 +17,8 @@
 
 ##### To Deploy
 
-- To production `npm run deploy`
-- To stage `npm run stage`
+- To production `npm run deploy-prod`
+- To stage `npm run deploy-stage`
 
 > Pull requests on main and development automatically deploys to main and stage respectively if tets pass.
 

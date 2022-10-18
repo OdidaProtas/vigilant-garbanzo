@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "deploy": "lambda-build upload sitemap-gen-prod  -r eu-central-1 -e src/index.ts",
-    "stage": "lambda-build upload sitemap-gen-stage  -r eu-central-1 -e src/index.ts",
+    "deploy-prod": "lambda-build upload sitemap-gen-prod  -r eu-central-1 -e src/index.ts",
+    "deploy-stage": "lambda-build upload sitemap-gen-stage  -r eu-central-1 -e src/index.ts",
     "test": "mocha --recursive 'test' --extension ts --require esbuild-register"
   },
   "dependencies": {

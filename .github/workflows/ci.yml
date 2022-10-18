@@ -47,18 +47,18 @@ jobs:
           CI: true
         run: |
           npm ci
-      - name: Run tests if on main if on main
+      - name: Run product tests
         if: github.ref == 'refs/heads/main'
         run: |
           # npm run test
-      - name: run tests on develop if on develop
+      - name: run staging tests
         if: github.ref == 'refs/heads/develop'
         run: |
           # npm run test
       - name: If on main branch deploy to production
         if: github.ref == 'refs/heads/main'
         run: |
-          # npm run deploy
+          # npm run deploy-prod
       - name: Else if on develop branch deploy staging
         if: github.ref == 'refs/heads/develop'
         run: |
