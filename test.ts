@@ -1,6 +1,4 @@
 import "dotenv/config";
-import * as fs from "fs";
-import * as path from "path";
 import { describe, it, afterEach } from "mocha";
 import { stub, restore } from "sinon";
 import { strictEqual } from "assert";
@@ -18,32 +16,6 @@ const executeLambda = async () => {
 };
 
 afterEach(restore);
-
-describe("Config variables", function () {
-  it("Checks if .env file is present", function (done) {
-    fs.readFile(path.join(__dirname, ".env"), done);
-  });
-  it("Checks if AWS_REGION is defined", function (done) {
-    const data = process.env.AWS_REGION;
-    if (data) done();
-    else done("AWS_REGION is not defined in .env");
-  });
-  it("Checks if S3_BUCKET is defined", function (done) {
-    const data = process.env.S3_BUCKET;
-    if (data) done();
-    else done("S3_BUCKET is not defined in .env");
-  });
-  it("Checks if BASE_SITEMAP_URL is defined", function (done) {
-    const data = process.env.BASE_SITEMAP_URL;
-    if (data) done();
-    else done("BASE_SITEMAP_URL is not defined in .env");
-  });
-  it("Checks if BASE_API_URL is defined", function (done) {
-    const data = process.env.BASE_API_URL;
-    if (data) done();
-    else done("BASE_API_URL is not defined in .env");
-  });
-});
 
 const productsUrl = "https://sitemap-gen-stage/products/sitemap.xml";
 const expectedUrl = `${constants.BASE_DOC_URL}/slug-1`;

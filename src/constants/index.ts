@@ -1,17 +1,17 @@
-import "dotenv/config";
+import { secrets } from "../util";
 
 const AWS_REGION = process.env.AWS_REGION;
-const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = secrets.decrypt("bucket");
 
-const BASE_DOC_URL = process.env.BASE_SITEMAP_URL;
-const BASE_API_URL = process.env.BASE_API_URL;
+const BASE_DOC_URL = secrets.decrypt("url");
+const BASE_API_URL = secrets.decrypt("api");
 
-const PRODUCTS_URL = `${BASE_API_URL}products?is_approved=true`;
-const MAIN_CATEGORIES_URL = `${BASE_API_URL}categories`;
-const SUB_CATEGORIES_URL = `${BASE_API_URL}sub-categories`;
-const COLLECTIONS_URL = `${BASE_API_URL}collections`;
-const BRANDS_URL = `${BASE_API_URL}brands`;
-const CHILD_CATEGORIES_URL = `${BASE_API_URL}child-categories`;
+const PRODUCTS_URL = `${BASE_API_URL}/products?is_approved=true`;
+const MAIN_CATEGORIES_URL = `${BASE_API_URL}/categories`;
+const SUB_CATEGORIES_URL = `${BASE_API_URL}/sub-categories`;
+const COLLECTIONS_URL = `${BASE_API_URL}/collections`;
+const BRANDS_URL = `${BASE_API_URL}/brands`;
+const CHILD_CATEGORIES_URL = `${BASE_API_URL}/child-categories`;
 
 const FILENAME = "sitemap";
 
@@ -30,7 +30,7 @@ const URL_PATHS = {
   childCategories: "c",
 };
 
-export const constants = {
+export var constants = {
   FILENAME,
   AWS_REGION,
   S3_BUCKET,

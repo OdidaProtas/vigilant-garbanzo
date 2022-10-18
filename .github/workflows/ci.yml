@@ -16,32 +16,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
-      - name: If on main branch create and populate production .env file
-        if: github.ref == 'refs/heads/main'
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          S3_BUCKET: ${{ secrets.SITEMAP_GEN_PROD}}
-          BASE_SITEMAP_URL: ${{secrets.PROD_URL}} 
-          BASE_API_URL: ${{ secrets.PROD_API}}
-        run: |
-          touch .env
-          echo AWS_REGION="$AWS_REGION" >> .env
-          echo S3_BUCKET="$S3_BUCKET" >> .env
-          echo BASE_SITEMAP_URL="$BASE_SITEMAP_URL" >> .env
-          echo BASE_API_URL="$BASE_API_URL" >> .env
-      - name: Else  if on develop create and populate .env
-        if: github.ref == 'refs/heads/develop'
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          S3_BUCKET: ${{ secrets.SITEMAP_GEN_STAGE }}
-          BASE_SITEMAP_URL: ${{secrets.STAGE_URL}}
-          BASE_API_URL: ${{ secrets.STAGE_API}}
-        run: |
-          touch .env
-          echo AWS_REGION="$AWS_REGION" >> .env
-          echo S3_BUCKET="$S3_BUCKET" >> .env
-          echo BASE_SITEMAP_URL="$BASE_SITEMAP_URL" >> .env
-          echo BASE_API_URL="$BASE_API_URL" >> .env
       - name: npm ci
         env:
           CI: true
@@ -49,10 +23,14 @@ jobs:
           npm ci
       - name: Run tests if on main if on main
         if: github.ref == 'refs/heads/main'
+        env:
+          AWS_REGION: ${{secrets.AWS_REGION}}
         run: |
           # npm run test
       - name: run tests on develop if on develop
         if: github.ref == 'refs/heads/develop'
+        env:
+          AWS_REGION: ${{secrets.AWS_REGION}}
         run: |
           # npm run test
       - name: If on main branch deploy to production
