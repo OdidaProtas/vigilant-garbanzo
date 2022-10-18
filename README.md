@@ -20,6 +20,9 @@
 - To production `npm run deploy`
 - To stage `npm run stage`
 
+> Deploy and requires aws-cli config vars locally while working locally
+ie on windows powershell:   `$env:aws-region = 'eu-central-1'`
+
 > Pull requests on main and development automatically deploys to main and stage respectively if tets pass.
 
 #### Available sitemaps
