@@ -1,10 +1,41 @@
-import { secrets } from "../util";
+const AWS = require("aws-sdk");
+AWS.config.update({ region: process.env.AWS_REGION });
+const kms = new AWS.KMS();
+const decrypted: any = {};
+
+const decrypt = (secretName: string) => {
+  if (decrypted[secretName]) {
+    return decrypted[secretName];
+  }
+  try {
+    const req = {
+      CiphertextBlob: Buffer.from(
+        (process.env as any)[secretName] ?? "",
+        "base64"
+      ),
+    };
+    let decryptedVal;
+    kms
+      .decrypt(req)
+      .promise()
+      .then((data: any) => {
+        decryptedVal = data?.Plaintext.toString("ascii");
+      });
+
+    decrypted[secretName] = decryptedVal;
+    return decryptedVal;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const secrets = { decrypt };
 
 const AWS_REGION = process.env.AWS_REGION;
-const S3_BUCKET = secrets.decrypt("bucket");
+const S3_BUCKET = secrets.decrypt("BUCKET");
 
-const BASE_DOC_URL = secrets.decrypt("url");
-const BASE_API_URL = secrets.decrypt("api");
+const BASE_DOC_URL = secrets.decrypt("URL");
+const BASE_API_URL = secrets.decrypt("API");
 
 const PRODUCTS_URL = `${BASE_API_URL}/products?is_approved=true`;
 const MAIN_CATEGORIES_URL = `${BASE_API_URL}/categories`;
