@@ -17,8 +17,8 @@
 
 ##### To Deploy
 
-- To production `npm run deploy`
-- To stage `npm run stage`
+- To production `npm run deploy-prod`
+- To stage `npm run deploy-stage`
 
 > Deploy and requires aws-cli config vars locally while working locally
 ie on windows powershell:   `$env:aws-region = 'eu-central-1'`
