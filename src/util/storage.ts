@@ -1,6 +1,6 @@
-import { constants } from "../constants";
 import { handleException } from "./handleException";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { constants } from "../constants";
 
 const {
   PRODUCTS_DIR,

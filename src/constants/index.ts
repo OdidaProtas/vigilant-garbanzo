@@ -1,17 +1,48 @@
-import "dotenv/config";
+const AWS = require("aws-sdk");
+AWS.config.update({ region: process.env.AWS_REGION });
+const kms = new AWS.KMS();
+const decrypted: any = {};
+
+const decrypt = (secretName: string) => {
+  if (decrypted[secretName]) {
+    return decrypted[secretName];
+  }
+  try {
+    const req = {
+      CiphertextBlob: Buffer.from(
+        (process.env as any)[secretName] ?? "",
+        "base64"
+      ),
+    };
+    let decryptedVal;
+    kms
+      .decrypt(req)
+      .promise()
+      .then((data: any) => {
+        decryptedVal = data?.Plaintext.toString("ascii");
+      });
+
+    decrypted[secretName] = decryptedVal;
+    return decryptedVal;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const secrets = { decrypt };
 
 const AWS_REGION = process.env.AWS_REGION;
-const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = secrets.decrypt("BUCKET");
 
-const BASE_DOC_URL = process.env.BASE_SITEMAP_URL;
-const BASE_API_URL = process.env.BASE_API_URL;
+const BASE_DOC_URL = secrets.decrypt("URL");
+const BASE_API_URL = secrets.decrypt("API");
 
-const PRODUCTS_URL = `${BASE_API_URL}products?is_approved=true`;
-const MAIN_CATEGORIES_URL = `${BASE_API_URL}categories`;
-const SUB_CATEGORIES_URL = `${BASE_API_URL}sub-categories`;
-const COLLECTIONS_URL = `${BASE_API_URL}collections`;
-const BRANDS_URL = `${BASE_API_URL}brands`;
-const CHILD_CATEGORIES_URL = `${BASE_API_URL}child-categories`;
+const PRODUCTS_URL = `${BASE_API_URL}/products?is_approved=true`;
+const MAIN_CATEGORIES_URL = `${BASE_API_URL}/categories`;
+const SUB_CATEGORIES_URL = `${BASE_API_URL}/sub-categories`;
+const COLLECTIONS_URL = `${BASE_API_URL}/collections`;
+const BRANDS_URL = `${BASE_API_URL}/brands`;
+const CHILD_CATEGORIES_URL = `${BASE_API_URL}/child-categories`;
 
 const FILENAME = "sitemap";
 
@@ -30,7 +61,7 @@ const URL_PATHS = {
   childCategories: "c",
 };
 
-export const constants = {
+export var constants = {
   FILENAME,
   AWS_REGION,
   S3_BUCKET,
