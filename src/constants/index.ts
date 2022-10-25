@@ -4,7 +4,7 @@ const S3_BUCKET = process.env.BUCKET;
 const BASE_DOC_URL = process.env.URL;
 const BASE_API_URL = process.env.API;
 
-const PRODUCTS_URL = `${BASE_API_URL}/products?status_id=1`;
+const PRODUCTS_URL = `${BASE_API_URL}/products?status_id=1&limit=1000`;
 const MAIN_CATEGORIES_URL = `${BASE_API_URL}/categories`;
 const SUB_CATEGORIES_URL = `${BASE_API_URL}/sub-categories`;
 const COLLECTIONS_URL = `${BASE_API_URL}/collections`;

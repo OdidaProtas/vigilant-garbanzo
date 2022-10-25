@@ -4,7 +4,7 @@
 
 ##### Requirements
 
-- Node.js installed
+- Node.js
 - Terminal
 - Typescript
 
@@ -37,9 +37,9 @@ ie on windows powershell:   `$env:aws-region = 'eu-central-1'`
 - Entry `src/index.ts`
 - Environment variable `.env`
     1. AWS_REGION
-    2. S3_BUCKET 
-    3. BASE_SITEMAP_URL
-    4. BASE_API_URL
+    2. BUCKET 
+    3. URL
+    4. API
 - Constants i.e strings, urls `src/constants`
 - Util `src/util`
     1. handleException.ts - Takes a promise argument and returns an array with the resolved promise and error as first and second items respectively.

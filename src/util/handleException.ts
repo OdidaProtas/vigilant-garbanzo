@@ -7,7 +7,6 @@ const handleException = async (promise: Promise<any>) => {
     }
     return [res, null];
   } catch (error) {
-    console.error(error);
     return [null, error];
   }
 };

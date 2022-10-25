@@ -2,7 +2,7 @@ import "dotenv/config";
 import axios from "axios";
 
 import { constants } from "./constants";
-import { storage, xml, urls } from "./util";
+import { storage, xml, urls, pages } from "./util";
 
 import { handleException } from "./util/handleException";
 
@@ -19,9 +19,9 @@ const {
 } = constants;
 
 export const handler = async (
-  event: CloudFormationCustomResourceEvent
+  _event: CloudFormationCustomResourceEvent
 ): Promise<TOutput> => {
-  const productsRequest = axios.get(PRODUCTS_URL);
+  const productsRequest = pages.getAll(PRODUCTS_URL);
   const mainCategoriesRequest = axios.get(MAIN_CATEGORIES_URL);
   const subCategoriesRequest = axios.get(SUB_CATEGORIES_URL);
   const collectionsRequest = axios.get(COLLECTIONS_URL);
